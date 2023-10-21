@@ -2,3 +2,8 @@ http://localhost {
     reverse_proxy /api/* http://sfood_api:80
     reverse_proxy http://sfood_ui:80
 }
+
+http://localhost:44420 {
+    header Access-Control-Allow-Origin "*"
+    reverse_proxy http://sfood_ui:44420
+}
