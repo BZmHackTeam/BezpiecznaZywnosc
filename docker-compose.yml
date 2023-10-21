@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  ui:
+    container_name: sfood_ui
+    image: docker.femsci.net:5000/sfood_ui:dev
+    build:
+      context: ./
+      dockerfile: dev.Dockerfile
+      target: ui
+    volumes:
+      - ./:/source
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  api:
+    container_name: sfood_api
+    image: docker.femsci.net:5000/sfood_api:dev
+    build:
+      context: ./
+      dockerfile: dev.Dockerfile
+      target: api
+    volumes:
+      - ./:/source
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+  rp:
+    container_name: caddy
+    image: caddy:alpine
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./dev.Caddyfile:/etc/caddy/Caddyfile
