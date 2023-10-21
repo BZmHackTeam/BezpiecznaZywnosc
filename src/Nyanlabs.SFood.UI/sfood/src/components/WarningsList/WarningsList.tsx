@@ -1,11 +1,16 @@
-import { IonItem, IonLabel, IonList } from "@ionic/react";
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonModal, IonTitle, IonToolbar } from "@ionic/react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const WarningsList: React.FC = () => {
     const [dataset, setDataset] = useState<any[]>([]);
-    const [warningsIds, setWarningsIds] = useState<string[]>([]);
     const [warningsContent, setWarningsContent] = useState<any[]>([]);
+    const [shouldFetchMoreData, setShouldFetchMoreData] = useState(false);
+    const [isFirstRequest, setIsFirstRequest] = useState(true);
+    const [pageIndex, setPageIndex] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentlySelectedWarning, setCurrentlySelectedWarning] = useState<object>();
+    const eventRef = useRef();
 
     useEffect(() => {
         async function getDataset() {
@@ -13,50 +18,143 @@ const WarningsList: React.FC = () => {
             const data = await response.json();
 
             setDataset(data.data);
-            console.log(data.data);
         };
 
         getDataset();
     }, []);
 
     useEffect(() => {
-        if (dataset !== null && dataset !== undefined) {
-            const datasetLength = (dataset as any).length;
-
-            for (let i = 0; i < datasetLength; i++) {
-                setWarningsIds(previousWarningsIds => [...previousWarningsIds, (dataset as any)[i].id]);
+        if (dataset !== undefined && dataset !== null) {
+            if (isFirstRequest === true) {
+                async function getDatasetElements() {
+                    for (let datasetElement of dataset) {
+                        const response = await fetch(datasetElement.relationships.tabular_data.links.related);
+                        const data = await response.json();
+                        
+                        setWarningsContent(previousWarningsContent => [...previousWarningsContent, data.data[0].attributes]);
+                    };
+                };
+                
+                getDatasetElements();
             }
-        }
+        };
     }, [dataset]);
 
     useEffect(() => {
-        if (warningsIds.length === 20) {
-            async function getWarningsContent(id: string) {
-                const response = await fetch(`https://api.dane.gov.pl/1.4/resources/${id}/data?page=1&per_page=20`);
+        if (warningsContent.length === 20) {
+            setIsFirstRequest(false);
+        };
+    }, [warningsContent]);
+
+    function onIonScroll(event: any) {
+        setPageIndex(previousPageIndex => previousPageIndex + 1);
+        setShouldFetchMoreData(true);
+        eventRef.current = event;
+    };
+
+    useEffect(() => {
+        if (shouldFetchMoreData) {
+            async function fetchNewData() {
+                const response = await fetch(`https://api.dane.gov.pl/1.4/datasets/855/resources?page=${pageIndex}&per_page=20&sort=-data_date&include=institution`);
                 const data = await response.json();
 
-                setWarningsContent(previousWarningsContent => [...previousWarningsContent, data.data[0].attributes]);
-            };
+                setDataset(previousDataset => [...previousDataset, ...data.data]);
 
-            for (let i = 0; i < warningsIds.length; i++) {
-                getWarningsContent(warningsIds[i]);
-            };
+                for (let dataElement of data.data) {
+                    const response2 = await fetch(dataElement.relationships.tabular_data.links.related);
+                    const data2 = await response2.json();
 
-            console.log("First content request");
+                    setWarningsContent(previousWarningsContent => [...previousWarningsContent, data2.data[0].attributes]);
+                };
+
+                let id = setTimeout(() => {
+                    setShouldFetchMoreData(false);
+                    (eventRef.current as any).target.complete();
+                }, 5000);
+                
+                return () => {
+                    clearTimeout(id);
+                };
+            }
+
+            fetchNewData();
         }
-    }, [warningsIds]);
+    }, [shouldFetchMoreData]);
+
+    function openModal(warningContent: any) {
+        setCurrentlySelectedWarning(warningContent);
+        console.log(warningContent);
+        setIsModalOpen(true);
+    };
 
     return warningsContent.length > 0 ? (
         <>
-            <IonList lines="full">
-                {warningsContent.map((warningContent, key) => (
-                    <IonItem key={key}>
-                        <IonLabel>
-                            {warningContent.col7.val}
-                        </IonLabel>
-                    </IonItem>
-                ))}
-            </IonList>
+            <>
+                <IonList lines="full">
+                    {warningsContent.map((warningContent, key) => (
+                        <IonItem onClick={() => openModal(warningContent)} button key={key}>
+                            <IonLabel>
+                                {warningContent.col7.val}
+                            </IonLabel>
+                        </IonItem>
+                    ))}
+                </IonList>
+                <IonModal isOpen={isModalOpen}>
+                    <IonHeader>
+                        <IonToolbar>
+                            <IonTitle>
+                                Szczegóły
+                            </IonTitle>
+                        </IonToolbar>
+                    </IonHeader>
+                    <IonContent>
+                        <IonHeader collapse="condense">
+                            <IonToolbar>
+                                <IonTitle size="large">
+                                    Szczegóły
+                                </IonTitle>
+                            </IonToolbar>
+                        </IonHeader>
+                        {currentlySelectedWarning !== undefined && currentlySelectedWarning !== null && (
+                            <IonList lines="full">
+                                <IonItem>
+                                    <IonLabel>
+                                        {(currentlySelectedWarning as any).col3.val}
+                                    </IonLabel>
+                                </IonItem>
+                                <IonItem>
+                                    <IonLabel>
+                                        {(currentlySelectedWarning as any).col2.val}
+                                    </IonLabel>
+                                </IonItem>
+                                <IonItem>
+                                    <IonLabel>
+                                        {(currentlySelectedWarning as any).col5.val}
+                                    </IonLabel>
+                                </IonItem>
+                                <IonItem>
+                                    <IonLabel>
+                                        {(currentlySelectedWarning as any).col6.val}
+                                    </IonLabel>
+                                </IonItem>
+                                <IonItem>
+                                    <IonLabel>
+                                        {(currentlySelectedWarning as any).col7.val}
+                                    </IonLabel>
+                                </IonItem>
+                                <IonItem>
+                                    <IonLabel>
+                                        {(currentlySelectedWarning as any).col9.val}
+                                    </IonLabel>
+                                </IonItem>
+                            </IonList>
+                        )}
+                    </IonContent>
+                </IonModal>
+                <IonInfiniteScroll onIonInfinite={onIonScroll}>
+                    <IonInfiniteScrollContent />
+                </IonInfiniteScroll>
+            </>
         </>
     ) : <></>;
 };
