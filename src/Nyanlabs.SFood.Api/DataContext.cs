@@ -15,6 +15,6 @@ public class DataContext : DbContext
     {
         base.OnModelCreating(mb);
 
-        
+        mb.Entity<IncidentSubmission>().HasIndex(s => new { s.SubmitterAddress, s.Producer });
     }
 }
