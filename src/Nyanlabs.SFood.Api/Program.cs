@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using Nyanlabs.SFood.Api;
 using Nyanlabs.SFood.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);

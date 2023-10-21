@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Nyanlabs.SFood.Api.Models;
 using Nyanlabs.SFood.Api.Services;
@@ -22,7 +16,7 @@ public class IncidentController : ControllerBase
     private readonly EmailClient _mail;
 
     [HttpPost("submit")]
-    public async Task<IActionResult> SubmitIncident([FromForm] IncidentSubmission incident)
+    public async Task<IActionResult> SubmitIncident([FromBody] IncidentSubmission incident)
     {
         string body = $@"<p>Dziękujemy za zgłoszenie incydentu.<p>
 <p>Dane zgłoszenia:<br/>
