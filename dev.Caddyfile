@@ -1,6 +1,6 @@
 http://localhost {
     reverse_proxy /api/* http://sfood_api:80
-    reverse_proxy http://sfood_ui:80
+    reverse_proxy http://sfood_ui:44420
 }
 
 http://localhost:44420 {

@@ -21,6 +21,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import Submit from './pages/Submit';
 
 setupIonicReact();
 
@@ -33,6 +34,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/">
           <Redirect to="/home" />
+        </Route>
+        <Route exact path="/submit">
+          <Submit />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

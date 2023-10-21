@@ -29,4 +29,5 @@ FROM base AS ui
 RUN apk add npm
 
 USER $USERNAME
-ENTRYPOINT [ "dotnet", "watch", "--project", "./src/Nyanlabs.SFood.UI", "run", "--", "--urls", "http://0.0.0.0:80" ]
+WORKDIR /source/src/Nyanlabs.SFood.UI/sfood
+ENTRYPOINT [ "npm", "start" ]
