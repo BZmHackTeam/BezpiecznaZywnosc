@@ -1,6 +1,6 @@
 # Bezpieczna Żywność
 
-**Codename:** SFood
+**Codename:** SFood  
 **Description:** An application that enables users to view food contamination reports issued by GIS, get notified about such incidents and to submit their own reports of potential contamination to be reviewed by GIS.
 
 ## Tech stack
