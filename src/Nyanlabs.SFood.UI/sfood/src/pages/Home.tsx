@@ -23,7 +23,6 @@ const Home: React.FC = () => {
         <div className={`${styles.addWarningButtonDiv} ion-padding-horizontal`}>
           <AddWarningButton />
         </div>
-        <Search />
         <WarningsList />
       </IonContent>
     </IonPage>

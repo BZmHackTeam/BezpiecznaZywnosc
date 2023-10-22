@@ -1,8 +1,10 @@
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonModal, IonTitle, IonToolbar, useIonRouter } from "@ionic/react";
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonLabel, IonList, IonModal, IonRouterContext, IonSearchbar, IonTitle, IonToolbar, useIonRouter } from "@ionic/react";
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import styles from "./WarningsList.module.css";
+import { Redirect, Route, Router, __RouterContext, useLocation } from "react-router";
+import { chevronBack, closeOutline } from "ionicons/icons";
 
 const WarningsList: React.FC = () => {
     const [dataset, setDataset] = useState<any[]>([]);
@@ -12,7 +14,9 @@ const WarningsList: React.FC = () => {
     const [pageIndex, setPageIndex] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentlySelectedWarning, setCurrentlySelectedWarning] = useState<object>();
+    const { push } = useIonRouter();
     const eventRef = useRef();
+    const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
         async function getDataset() {
@@ -89,76 +93,117 @@ const WarningsList: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    return warningsContent.length > 0 ? (
+    function closeModal() {
+        setCurrentlySelectedWarning(undefined);
+        setIsModalOpen(false);
+    }
+
+    function handleInputValueChange(event: any) {
+        setSearchValue(event.detail.value);
+    };
+
+    return (
         <>
-            <>
-                <IonList lines="full">
-                    {warningsContent.map((warningContent, key) => (
-                        <IonItem detail onClick={() => openModal(warningContent)} button key={key}>
-                            <IonLabel>
-                                {warningContent.col7.val}
-                            </IonLabel>
-                        </IonItem>
-                    ))}
-                </IonList>
-                <IonModal isOpen={isModalOpen}>
-                    <IonHeader>
-                        <IonToolbar>
-                            <IonTitle>
-                                Szczegóły
-                            </IonTitle>
-                        </IonToolbar>
-                    </IonHeader>
-                    <IonContent>
-                        <IonHeader collapse="condense">
-                            <IonToolbar>
-                                <IonTitle size="large">
-                                    Szczegóły
-                                </IonTitle>
-                            </IonToolbar>
-                        </IonHeader>
-                        {currentlySelectedWarning !== undefined && currentlySelectedWarning !== null && (
-                            <IonList lines="full">
-                                <IonItem>
-                                    <IonLabel>
-                                        {(currentlySelectedWarning as any).col3.val}
+            <IonSearchbar placeholder="Wpisz słowo kluczowe" value={searchValue} onIonChange={handleInputValueChange} />
+                {warningsContent.length > 0 && (
+                    <>
+                        <IonList lines="full">
+                            {warningsContent.map((warningContent, key) => (
+                                <IonItem detail onClick={() => openModal(warningContent)} button key={key}>
+                                    <IonLabel className="ion-text-wrap">
+                                        {warningContent.col7.val}
                                     </IonLabel>
                                 </IonItem>
-                                <IonItem>
-                                    <IonLabel>
-                                        {(currentlySelectedWarning as any).col2.val}
-                                    </IonLabel>
-                                </IonItem>
-                                <IonItem>
-                                    <IonLabel>
-                                        {(currentlySelectedWarning as any).col5.val}
-                                    </IonLabel>
-                                </IonItem>
-                                <IonItem>
-                                    <IonLabel>
-                                        {(currentlySelectedWarning as any).col6.val}
-                                    </IonLabel>
-                                </IonItem>
-                                <IonItem>
-                                    <IonLabel>
-                                        {(currentlySelectedWarning as any).col7.val}
-                                    </IonLabel>
-                                </IonItem>
-                                <IonItem>
-                                    <IonLabel>
-                                        {(currentlySelectedWarning as any).col9.val}
-                                    </IonLabel>
-                                </IonItem>
-                            </IonList>
-                        )}
-                    </IonContent>
-                </IonModal>
-                <IonInfiniteScroll onIonInfinite={onIonScroll}>
-                    <IonInfiniteScrollContent />
-                </IonInfiniteScroll>
-            </>
+                            ))}
+                        </IonList>
+                        <IonModal isOpen={isModalOpen}>
+                            <IonHeader>
+                                <IonToolbar>
+                                    <IonTitle>
+                                        Szczegóły
+                                    </IonTitle>
+                                    <IonButtons slot="start">
+                                        <IonButton onClick={closeModal}>
+                                            <IonIcon icon={chevronBack} />
+                                            Powrót
+                                        </IonButton>
+                                    </IonButtons>
+                                </IonToolbar>
+                            </IonHeader>
+                            <IonContent>
+                                {currentlySelectedWarning !== undefined && currentlySelectedWarning !== null && (
+                                    <IonList lines="full">
+                                        <IonItem>
+                                            <IonLabel className={`${styles.label} ion-text-wrap`}>
+                                                <h1>
+                                                    {(currentlySelectedWarning as any).col3.val}
+                                                </h1>
+                                                <p>
+                                                    województwo
+                                                </p>
+                                            </IonLabel>
+                                        </IonItem>
+                                        <IonItem>
+                                            <IonLabel className={`${styles.label} ion-text-wrap`}>
+                                                <h1>
+                                                    {(currentlySelectedWarning as any).col2.val}
+                                                </h1>
+                                                <p>
+                                                    nazwa kodowa
+                                                </p>
+                                            </IonLabel>
+                                        </IonItem>
+                                        <IonItem>
+                                            <IonLabel className={`${styles.label} ion-text-wrap`}>
+                                                <h1>
+                                                    {(currentlySelectedWarning as any).col5.val}
+                                                </h1>
+                                                <p>
+                                                    firma
+                                                </p>
+                                            </IonLabel>
+                                        </IonItem>
+                                        <IonItem>
+                                            <IonLabel className={`${styles.label} ion-text-wrap`}>
+                                                <h1>
+                                                    {(currentlySelectedWarning as any).col6.val}
+                                                </h1>
+                                                <p>
+                                                    kategoria
+                                                </p>
+                                            </IonLabel>
+                                        </IonItem>
+                                        <IonItem>
+                                            <IonLabel className={`${styles.label} ion-text-wrap`}>
+                                                <h1>
+                                                    {(currentlySelectedWarning as any).col7.val}
+                                                </h1>
+                                                <p>
+                                                    nazwa produktu
+                                                </p>
+                                            </IonLabel>
+                                        </IonItem>
+                                        <IonItem className={`${styles.label} ion-text-wrap`}>
+                                            <IonLabel>
+                                                <h1 className="ion-text-wrap">
+                                                    {(currentlySelectedWarning as any).col9.val}
+                                                </h1>
+                                                <p>
+                                                    powód zgłoszenia
+                                                </p>
+                                            </IonLabel>
+                                        </IonItem>
+                                    </IonList>
+                                )}
+                            </IonContent>
+                        </IonModal>
+                        <IonInfiniteScroll onIonInfinite={onIonScroll}>
+                            <IonInfiniteScrollContent />
+                        </IonInfiniteScroll>
+                    </>
+                )}
         </>
-    ) : <></>;
+    );
 };
 
 export default WarningsList;

@@ -121,8 +121,8 @@ const handleInputChange = (fieldName: any, value: any) => {
             />
           </IonItem>
 
-          <div style={{width: "100%", display: "flex", justifyContent: "center"}} className="ion-margin-top">
-            <IonButton style={{"--width": "100%"}} size="large" onClick={(e) => handleSubmit(e as any)} type="submit">
+          <div style={{width: "100%", display: "flex", justifyContent: "center"}} className="ion-padding-horizontal">
+            <IonButton style={{"--width": "100%", "width": "100%", "margin-top": "320px"}} size="large" onClick={(e) => handleSubmit(e as any)} type="submit">
               Wyślij
             </IonButton>
           </div>

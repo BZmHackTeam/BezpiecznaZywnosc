@@ -1,9 +1,0 @@
-.searchfilter {
-    width: 64px;
-    height: 36px;
-}
-
-ion-button.searchfilter {
-    --padding-start: 0px !important;
-    --padding-end: 0px !important;
-}
