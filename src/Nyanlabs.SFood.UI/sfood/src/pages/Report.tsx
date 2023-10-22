@@ -1,5 +1,7 @@
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonPage, IonProgressBar, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonBackButton, IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonProgressBar, IonTitle, IonToolbar } from '@ionic/react';
 import { FormEventHandler, useState } from 'react';
+
+import styles from "./Report.module.css";
 
 const IncidentForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +10,8 @@ const IncidentForm: React.FC = () => {
     producer: '',
     submitterAddress: '',
     description: '',
-    location: ''
+    location: '',
+    date: ''
   });
     
 const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -33,7 +36,6 @@ const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     }
   };
 
-
 const handleInputChange = (fieldName: any, value: any) => {
     setFormData({
       ...formData,
@@ -41,12 +43,19 @@ const handleInputChange = (fieldName: any, value: any) => {
     });
   };
 
+  function handleDateChange(event: any) {
+    setFormData(previousFormData => ({
+      ...previousFormData,
+      date: event.detail.value.substring(0, 10)
+    }));
+  };
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton></IonBackButton>
+            <IonBackButton text="Powrót" />
           </IonButtons>
           <IonTitle>
             Zgłoszenie
@@ -54,16 +63,18 @@ const handleInputChange = (fieldName: any, value: any) => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonProgressBar value={0}></IonProgressBar>
-        <form onSubmit={handleSubmit}>
-          <IonItem>
-            <IonLabel position="floating">Imię</IonLabel>
-            <IonInput
-              type="text"
-              value={formData.name}
-              onIonChange={(e) => handleInputChange('name', e.detail.value)}
-            />
-          </IonItem>
+        <IonList lines="full">
+          <IonAccordionGroup>
+            <IonAccordion>
+              <IonItem slot="header">
+                <IonLabel>Data</IonLabel>
+                <IonNote slot="end">
+                  {formData.date.replaceAll("-", ".")}
+                </IonNote>
+              </IonItem>
+              <IonDatetime locale="pl-PL" onIonChange={handleDateChange} className={styles.datetime} slot="content" presentation="date" min="2023-10-15" max="2023-10-22" />
+            </IonAccordion>
+          </IonAccordionGroup>
 
           <IonItem>
             <IonLabel position="floating">Nazwa produktu</IonLabel>
@@ -110,10 +121,10 @@ const handleInputChange = (fieldName: any, value: any) => {
             />
           </IonItem>
 
-          <IonButton expand="full" type="submit">
+          <IonButton onClick={(e) => handleSubmit(e as any)} type="submit">
             Wyślij
           </IonButton>
-        </form>
+        </IonList>
       </IonContent>
     </IonPage>
   );

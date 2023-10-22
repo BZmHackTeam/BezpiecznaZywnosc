@@ -1,8 +1,6 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonModal, IonPage, IonTitle, IonToolbar, useIonRouter } from "@ionic/react";
+import { IonButton, useIonRouter } from "@ionic/react";
 
 import styles from "./AddWarningButton.module.css";
-
-import { FormEventHandler, useState } from "react";
 
 const AddWarningButton: React.FC = () => {
     const { push } = useIonRouter();
@@ -12,11 +10,9 @@ const AddWarningButton: React.FC = () => {
     };
 
     return (
-        <>
-            <IonButton onClick={sendReport} className={styles.addWarningButton} color="success">
-                Wyślij własne zgłoszenie
-            </IonButton>
-        </>
+        <IonButton onClick={sendReport} className={styles.addWarningButton} color="success">
+            Wyślij własne zgłoszenie
+        </IonButton>
     );
 };
 

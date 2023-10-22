@@ -2,6 +2,8 @@ import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInfinit
 
 import { useEffect, useRef, useState } from "react";
 
+import styles from "./WarningsList.module.css";
+
 const WarningsList: React.FC = () => {
     const [dataset, setDataset] = useState<any[]>([]);
     const [warningsContent, setWarningsContent] = useState<any[]>([]);
@@ -92,7 +94,7 @@ const WarningsList: React.FC = () => {
             <>
                 <IonList lines="full">
                     {warningsContent.map((warningContent, key) => (
-                        <IonItem onClick={() => openModal(warningContent)} button key={key}>
+                        <IonItem detail onClick={() => openModal(warningContent)} button key={key}>
                             <IonLabel>
                                 {warningContent.col7.val}
                             </IonLabel>
