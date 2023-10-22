@@ -163,7 +163,20 @@ const WarningsList: React.FC = () => {
                   return true;
                 }
 
-                return ((x.col7 as any).val as string).includes(searchValue);
+                return (
+                  ((x.col7 as any).val as string)
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase()) ||
+                  ((x.col3 as any).val as string)
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase()) ||
+                  ((x.col6 as any).val as string)
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase()) ||
+                  ((x.col9 as any).val as string)
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase())
+                );
               })
               .map((warningContent, key) => (
                 <IonItem
@@ -209,7 +222,7 @@ const WarningsList: React.FC = () => {
                     <IonItem>
                       <IonLabel className={`${styles.label} ion-text-wrap`}>
                         <h1>{(currentlySelectedWarning as any).col5.val}</h1>
-                        <p>firma</p>
+                        <p>producent</p>
                       </IonLabel>
                     </IonItem>
                     <IonItem>
