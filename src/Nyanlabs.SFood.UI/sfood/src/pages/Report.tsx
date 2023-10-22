@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonPage, IonProgressBar, IonTitle, IonToolbar } from '@ionic/react';
 import { FormEventHandler, useState } from 'react';
 
 const IncidentForm: React.FC = () => {
@@ -45,15 +45,16 @@ const handleInputChange = (fieldName: any, value: any) => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Bezpieczna żywnosc</IonTitle>
+          <IonButtons slot="start">
+            <IonBackButton></IonBackButton>
+          </IonButtons>
+          <IonTitle>
+            Zgłoszenie
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Bezpieczna żywnosc</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <IonProgressBar value={0}></IonProgressBar>
         <form onSubmit={handleSubmit}>
           <IonItem>
             <IonLabel position="floating">Imię</IonLabel>
