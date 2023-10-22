@@ -1,4 +1,4 @@
-import { IonAccordion, IonAccordionGroup, IonBackButton, IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonProgressBar, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonBackButton, IonButton, IonButtons, IonContent, IonDatetime, IonDatetimeButton, IonHeader, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonProgressBar, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import { FormEventHandler, useState } from 'react';
 
 import styles from "./Report.module.css";
@@ -122,10 +122,11 @@ const handleInputChange = (fieldName: any, value: any) => {
           </IonItem>
 
           <div style={{width: "100%", display: "flex", justifyContent: "center"}} className="ion-padding-horizontal">
-            <IonButton style={{"--width": "100%", "width": "100%", "margin-top": "320px"}} size="large" onClick={(e) => handleSubmit(e as any)} type="submit">
+            <IonButton id="toast-trigger" style={{"--width": "100%", "width": "100%", "margin-top": "320px"}} size="large" onClick={(e) => handleSubmit(e as any)} type="submit">
               Wyślij
             </IonButton>
           </div>
+          <IonToast color="success" position='top' trigger="toast-trigger" duration={2500} message="Dziękujemy za zgłoszenie!"></IonToast>
         </IonList>
       </IonContent>
     </IonPage>
